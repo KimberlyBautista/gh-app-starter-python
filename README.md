@@ -31,11 +31,11 @@ pip3 install -r requirements.txt
 flask run
 ```
 
-### Connecting to GitHub
+## How to use setup and install the app
 
-- Create a new public repository at https://github.com/new
+- Create a new repository at https://github.com/li-playground/
 - Visit https://smee.io/ and click on `Start a new Channel` and note the URL
-- Create a new GitHub App - https://github.com/settings/apps/new
+- Create a new GitHub App - https://github.com/organizations/li-playground/settings/apps/new
 - Give it a distinct name and description (prefix your LDAP)
 - Set `Homepage URL` = `http://localhost:5000/`
 - Set `User authorization callback URL` = `http://localhost:5000/authenticate/`
@@ -44,7 +44,7 @@ flask run
 - Select the Radio Button for `Enable SSL verification`
 - Under permissions, give `Read & Write` permissions for `Pull Requests`
 - Under `Subscribe to Events`, check `Pull Request`
-- Generate and Download the `Private key`, move it to your app folder on local machine and name it `./private/gh-app.key`
+- Generate and Download the `Private key`, move it to your app folder on local machine and name it `.private-key`
 - Hit `Save Changes`
 
 Now you should be redirected to the App Settings -

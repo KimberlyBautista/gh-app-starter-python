@@ -5,7 +5,7 @@ import sys
 
 from requests.auth import HTTPBasicAuth
 
-# from gh_oauth_token import retrieve_token
+from gh_oauth_token import retrieve_token
 from bot_config import API_BASE_URL, GH_USER_TOKEN, GH_USER
 
 log = logging.getLogger(__name__)
@@ -36,34 +36,39 @@ new_comment = make_github_rest_api_call(
 ```
     """
 
-    # token = retrieve_token()
-    token = GH_USER_TOKEN
+    token = retrieve_token()
+    # token = GH_USER_TOKEN
 
     # Required headers.
     headers = {'Accept': 'application/vnd.github.antiope-preview+json',
                'Content-Type': 'application/json',
-               #    'Authorization': f'Bearer {token}'
+                  'Authorization': f'Bearer {token}'
                }
 
-    # API url
-    url = f'{API_BASE_URL}/{api_path}'
-    log.info(
-        f'sending {method.upper()} request to {url} w/ data {json.dumps(params)}')
     try:
         if method.upper() == 'POST':
-            response = requests.post(
-                url,
-                headers=headers,
-                data=json.dumps(params),
-                auth=HTTPBasicAuth(GH_USER, GH_USER_TOKEN)  # basic auth
-            )
+            response = requests.post(f'{API_BASE_URL}/{api_path}', headers=headers, data=json.dumps(
+                params))
         elif method.upper() == 'GET':
-            response = requests.get(
-                url,
-                headers=headers,
-                auth=HTTPBasicAuth(GH_USER, GH_USER_TOKEN)  # basic auth
-            )
+            response = requests.get(f'{API_BASE_URL}/{api_path}', headers=headers)
         else:
             raise Exception('Invalid Request Method.')
     except:
         log.exception("Could not make a successful API call to GitHub.")
+
+
+def set_check_on_pr(repo_full_name, check_name, check_status, check_conclusion, head_sha, output_title=None, output_summary=None):
+    payload = {
+        'name': check_name,
+        'status': check_status,
+        'head_sha': head_sha,
+    }
+
+    if check_conclusion:
+        payload['conclusion'] = check_conclusion
+
+    if output_title and output_summary:
+        payload['output'] = dict(title=output_title, summary=output_summary)
+
+    api_path = f'repos/{repo_full_name}/check-runs'
+    make_github_rest_api_call(api_path, 'POST', params=payload)
